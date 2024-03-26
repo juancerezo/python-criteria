@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python_criteria"
+description = "Pythonic Criteria pattern implementation"
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.12.0"
+license = {text = "GPL-3.0-only"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+authors = [
+    {name = "Juan Cerezo", email = "jcerezo.dev@proton.me"},
+]
+
+dependencies = [
+    
+]
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["python_criteria"]
+# namespaces = true
+
+[tool.setuptools.dynamic]
+version = {attr = "python_criteria.__version__"}
+
+[tool.pyright]
+typeCheckingMode = "standard"
+useLibraryCodeForTypes = true
+verboseOutput = false
+ignore = [
+    ".git",
+    "**/__pycache__",
+    "**/\\.*",
+    "node_modules",
+    "build",
+    "*.idea.py"
+]
+
+[tool.black]
+force-exclude = """
+/(
+\\.git
+| build
+| node_modules
+| .*\\.idea.py
+)/
+""" 
+
+# ... other project metadata fields as specified in:
+#     https://packaging.python.org/en/latest/specifications/declaring-project-metadata/

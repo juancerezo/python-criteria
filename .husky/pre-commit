@@ -1,0 +1,5 @@
+pyright .
+isort .
+black .
+pylint windu
+git add .
