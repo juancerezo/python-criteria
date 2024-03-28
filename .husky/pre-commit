@@ -1,5 +1,5 @@
 pyright .
 isort .
 black .
-pylint windu
+pylint python_criteria
 git add .
