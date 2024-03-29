@@ -1,10 +1,16 @@
 import abc
 from typing import Any
 
-from .filter import BooleanClause, BooleanClauseList, FilterableAttribute
+from .clauses import BooleanClause, BooleanClauseList
+from .filter import FilterableAttribute
 
 
-class Visitor(metaclass=abc.ABCMeta):
+class BaseVisitor(metaclass=abc.ABCMeta):
+    mapping_object: Any
+
+    def __init__(self, mapping_object: Any) -> None:
+        self.mapping_object = mapping_object
+
     @classmethod
     def __subclasshook__(cls, subclass):
         return (
@@ -36,6 +42,14 @@ class Visitor(metaclass=abc.ABCMeta):
             and callable(subclass.visit_not)
             or NotImplemented
         )
+
+    def _attr(self, field: FilterableAttribute):
+        if not hasattr(self.mapping_object, field.name):
+            raise ValueError(
+                f"'{field.name}' is not a valid attribute of '{field.parent_class.__name__}'"
+            )
+
+        return getattr(self.mapping_object, field.name)
 
     def visit(
         self,

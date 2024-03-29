@@ -1,50 +1,41 @@
 from typing import Any
 
-from .filter import BooleanClause, FilterableAttribute
-from .visitor import Visitor
-
 type SQLAlchemyTable = Any
 
+from .clauses import BooleanClause
+from .visitor import BaseVisitor
 
-class SQLAlchemyVisitor(Visitor):
-    def __init__(self, table: SQLAlchemyTable) -> None:
-        super().__init__()
-        self.table = table
 
-    def __attr(self, field: FilterableAttribute):
-        if not hasattr(self.table, field.name):
-            raise ValueError(
-                f"'{field.name}' is not a valid attribute of '{field.parent_class.__name__}'"
-            )
-
-        return getattr(self.table, field.name)
+class SQLAlchemyVisitor(BaseVisitor):
+    def __init__(self, mapping_object: SQLAlchemyTable) -> None:
+        super().__init__(mapping_object)
 
     def visit_eq(self, comparison: BooleanClause):
-        return self.__attr(comparison.field) == comparison.value
+        return self._attr(comparison.field) == comparison.value
 
     def visit_ne(self, comparison: BooleanClause):
-        return self.__attr(comparison.field) != comparison.value
+        return self._attr(comparison.field) != comparison.value
 
     def visit_lt(self, comparison: BooleanClause):
-        return self.__attr(comparison.field) < comparison.value
+        return self._attr(comparison.field) < comparison.value
 
     def visit_le(self, comparison: BooleanClause):
-        return self.__attr(comparison.field) <= comparison.value
+        return self._attr(comparison.field) <= comparison.value
 
     def visit_gt(self, comparison: BooleanClause):
-        return self.__attr(comparison.field) > comparison.value
+        return self._attr(comparison.field) > comparison.value
 
     def visit_ge(self, comparison: BooleanClause):
-        return self.__attr(comparison.field) >= comparison.value
+        return self._attr(comparison.field) >= comparison.value
 
     def visit_in(self, comparison: BooleanClause):
-        return self.__attr(comparison.field).in_(comparison.value)
+        return self._attr(comparison.field).in_(comparison.value)
 
     def visit_like(self, comparison: BooleanClause):
-        return self.__attr(comparison.field).ilike(comparison.value, escape="\\")
+        return self._attr(comparison.field).ilike(comparison.value, escape="\\")
 
     def visit_not_like(self, comparison: BooleanClause):
-        return self.__attr(comparison.field).not_ilike(comparison.value, escape="\\")
+        return self._attr(comparison.field).not_ilike(comparison.value, escape="\\")
 
     def visit_or(self, comparisons: list[Any]):
         _op = comparisons[0]
