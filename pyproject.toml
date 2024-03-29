@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "python_criteria"
+name = "python-criteria"
 description = "Pythonic criteria pattern implementation for allowing infraestructure abstraction in hexagonal applications."
 dynamic = ["version"]
 readme = "README.md"
