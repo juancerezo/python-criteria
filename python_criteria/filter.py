@@ -66,4 +66,4 @@ class FilterableAttribute[T]:
         return NotLike(self, other)
 
 
-type Attribute[T] = FilterableAttribute[T] | T
+type Attribute[T] = FilterableAttribute[T] | T  # pylint: disable=unsubscriptable-object
