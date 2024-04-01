@@ -36,7 +36,7 @@ class FilterableAttribute[T]:
         return f"{self.parent_class.__name__}.{self.name}[{self.type.__name__}]"
 
     def __str__(self):
-        return f"{self.parent_class.__name__}.{self.name}"
+        return self.name
 
     def __eq__(self, other):
         return Eq(self, other)
