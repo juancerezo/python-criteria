@@ -1,7 +1,45 @@
 # pyright: reportAttributeAccessIssue=false, reportIncompatibleMethodOverride=false
 from typing import Any, Type, overload
 
-from .clauses import Eq, Ge, Gt, In, Le, Like, Lt, Ne, NotLike
+from .clauses import (
+    BooleanClause,
+    BooleanClauseList,
+    Eq,
+    Ge,
+    Gt,
+    In,
+    Le,
+    Like,
+    Lt,
+    Ne,
+    NotLike,
+)
+
+type ClauseType = Eq | Ge | Gt | In | Le | Like | Lt | Ne | NotLike | BooleanClause | BooleanClauseList
+
+
+class Filter:
+    __clauses: ClauseType | None = None
+
+    def __and__(self, other: ClauseType):
+        if self.__clauses is None:
+            self.__clauses = other
+        else:
+            self.__clauses = self.__clauses & other
+
+        return self
+
+    def __or__(self, other: ClauseType):
+        if self.__clauses is None:
+            self.__clauses = other
+        else:
+            self.__clauses = self.__clauses | other
+
+        return self
+
+    @property
+    def clause(self):
+        return self.__clauses
 
 
 class Value:

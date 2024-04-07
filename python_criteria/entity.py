@@ -1,6 +1,4 @@
-from typing import Any
-
-from typing_extensions import dataclass_transform
+from typing import Any, dataclass_transform
 
 from .filter import FilterableAttribute, Value
 
