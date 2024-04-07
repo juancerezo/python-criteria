@@ -15,25 +15,30 @@ from .clauses import (
     NotLike,
 )
 
-type ClauseType = Eq | Ge | Gt | In | Le | Like | Lt | Ne | NotLike | BooleanClause | BooleanClauseList
+type ClauseType = BooleanClause | BooleanClauseList
 
 
 class Filter:
-    __clauses: ClauseType | None = None
+    __clauses: ClauseType | None
 
-    def __and__(self, other: ClauseType):
-        if self.__clauses is None:
-            self.__clauses = other
-        else:
-            self.__clauses = self.__clauses & other
+    def __init__(self, clause: ClauseType | None = None) -> None:
+        self.__clauses = clause
+
+    def and_(self, *clauses: ClauseType):
+        for clause in clauses:
+            if self.__clauses is None:
+                self.__clauses = clause
+
+            self.__clauses = self.__clauses & clause
 
         return self
 
-    def __or__(self, other: ClauseType):
-        if self.__clauses is None:
-            self.__clauses = other
-        else:
-            self.__clauses = self.__clauses | other
+    def or_(self, *clauses: ClauseType):
+        for clause in clauses:
+            if self.__clauses is None:
+                self.__clauses = clause
+
+            self.__clauses = self.__clauses | clause
 
         return self
 
