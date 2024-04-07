@@ -13,7 +13,7 @@ jobs:
   
       environment:
         name: pypi
-        url: https://pypi.org/p/heptagon
+        url: https://pypi.org/p/python-criteria
   
       permissions:
         id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
