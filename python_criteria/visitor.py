@@ -55,6 +55,9 @@ class BaseVisitor(metaclass=abc.ABCMeta):
             raise ValueError("_filter argument should be an instance of Filter.")
 
         clause = _filter.clause
+        if clause is None:
+            return None
+
         name = clause.__class__.__name__.lower()
         method = getattr(self, "visit_" + name)
 
