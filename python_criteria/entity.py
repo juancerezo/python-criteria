@@ -1,3 +1,4 @@
+from collections import ChainMap
 from typing import Any, dataclass_transform
 
 from .filter import FilterableAttribute, Value
@@ -52,7 +53,14 @@ class BaseEntity(metaclass=EntityBuilder):
 
         result: dict[str, Any] = {}
 
-        for name, _ in _object.__annotations__.items():
+        annotations = ChainMap(
+            *(
+                c.__annotations__
+                for c in _object.__mro__
+                if "__annotations__" in c.__dict__
+            )
+        )
+        for name, _ in annotations.items():
             if name in exclude:
                 continue
 
