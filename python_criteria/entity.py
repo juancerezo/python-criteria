@@ -56,7 +56,7 @@ class BaseEntity(metaclass=EntityBuilder):
         annotations = ChainMap(
             *(
                 c.__annotations__
-                for c in _object.__mro__
+                for c in _object.__class__.__mro__
                 if "__annotations__" in c.__dict__
             )
         )
