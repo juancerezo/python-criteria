@@ -24,21 +24,19 @@ class Filter:
     def __init__(self, clause: ClauseType | None = None) -> None:
         self.__clauses = clause
 
-    def and_(self, *clauses: ClauseType):
-        for clause in clauses:
-            if self.__clauses is None:
-                self.__clauses = clause
+    def __and__(self, clause: ClauseType):
+        if self.__clauses is None:
+            self.__clauses = clause
 
-            self.__clauses = self.__clauses & clause
+        self.__clauses = self.__clauses & clause
 
         return self
 
-    def or_(self, *clauses: ClauseType):
-        for clause in clauses:
-            if self.__clauses is None:
-                self.__clauses = clause
+    def __or__(self, clause: ClauseType):
+        if self.__clauses is None:
+            self.__clauses = clause
 
-            self.__clauses = self.__clauses | clause
+        self.__clauses = self.__clauses | clause
 
         return self
 
@@ -99,7 +97,7 @@ class FilterableAttribute[T]:
     def __ge__(self, other):
         return Ge(self, other)
 
-    def in_(self, other):
+    def __contains__(self, other):
         return In(self, other)
 
     def like(self, other):
