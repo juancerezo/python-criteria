@@ -38,8 +38,7 @@ class BaseEntity(metaclass=EntityBuilder):
             else:
                 setattr(self, name, kwargs[name])
 
-    def _get_label(self) -> str:
-
+    def __str__(self) -> str:
         if hasattr(self, "__label__"):
             label_fn = getattr(self, "__label__")
             if callable(label_fn):
