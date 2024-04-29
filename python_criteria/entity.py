@@ -55,6 +55,7 @@ class BaseEntity(metaclass=EntityBuilder):
             ("name",),
             ("full_name",),
             ("fullname",),
+            ("value",),
             ("label",),
             ("first_name", "last_name"),
             ("short_description",),
