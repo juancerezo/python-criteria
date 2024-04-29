@@ -71,7 +71,7 @@ class BaseEntity(metaclass=EntityBuilder):
 
         raise NotImplementedError(
             f"Label value cannot be resolved automatically, "
-            "please implement __label__ methon on {self.__class__.__name__} entity."
+            f"please implement __label__ method on {self.__class__.__name__} entity."
         )
 
     @classmethod
