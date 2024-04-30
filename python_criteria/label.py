@@ -18,15 +18,15 @@ def label(entity: BaseEntity) -> str:
         ("name",),
         ("full_name",),
         ("fullname",),
-        ("value",),
         ("label",),
+        ("value",),
         ("first_name", "last_name"),
         ("short_description",),
     ]
 
     for attrs in attrs_list:
         if not all(hasattr(entity, attr) for attr in attrs):
-            break
+            continue
 
         values = [getattr(entity, attr) for attr in attrs]
         if all(isinstance(value, str) for value in values):
