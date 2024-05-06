@@ -38,7 +38,13 @@ class BaseVisitor(metaclass=abc.ABCMeta):
             or NotImplemented
         )
 
-    def _attr(self, _object: Any, field: FilterableAttribute):
+    def _attr(self, _object_mapping: dict[Any, Any], field: FilterableAttribute):
+        _object = _object_mapping.get(field.parent_class)
+        if _object is None:
+            raise RuntimeError(
+                f"Invalid _object_mapping. Missing class '{field.parent_class.__name__}'."
+            )
+
         if not hasattr(_object, field.name):
             raise ValueError(
                 f"'{field.name}' is not a valid attribute of '{field.parent_class.__name__}'"
@@ -48,7 +54,7 @@ class BaseVisitor(metaclass=abc.ABCMeta):
 
     def visit(
         self,
-        _object: Any,
+        _object_mapping: dict[Any, Any],
         _filter: Filter,
     ):
         if not isinstance(_filter, Filter):
@@ -64,60 +70,62 @@ class BaseVisitor(metaclass=abc.ABCMeta):
         if isinstance(clause, BooleanClauseList):
             comparisons = []
             for item in clause.clause_list:
-                comparisons.append(self.visit(_object, Filter(item)))
+                comparisons.append(self.visit(_object_mapping, Filter(item)))
 
-            return method(_object, comparisons)
+            return method(_object_mapping, comparisons)
 
-        return method(_object, clause)
+        return method(_object_mapping, clause)
 
     @abc.abstractmethod
-    def visit_eq(self, _object: Any, comparison: BooleanClause):
+    def visit_eq(self, _object_mapping: dict[Any, Any], comparison: BooleanClause):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_ne(self, _object: Any, comparison: BooleanClause):
+    def visit_ne(self, _object_mapping: dict[Any, Any], comparison: BooleanClause):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_lt(self, _object: Any, comparison: BooleanClause):
+    def visit_lt(self, _object_mapping: dict[Any, Any], comparison: BooleanClause):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_le(self, _object: Any, comparison: BooleanClause):
+    def visit_le(self, _object_mapping: dict[Any, Any], comparison: BooleanClause):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_gt(self, _object: Any, comparison: BooleanClause):
+    def visit_gt(self, _object_mapping: dict[Any, Any], comparison: BooleanClause):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_ge(self, _object: Any, comparison: BooleanClause):
+    def visit_ge(self, _object_mapping: dict[Any, Any], comparison: BooleanClause):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_in(self, _object: Any, comparison: BooleanClause):
+    def visit_in(self, _object_mapping: dict[Any, Any], comparison: BooleanClause):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_like(self, _object: Any, comparison: BooleanClause):
+    def visit_like(self, _object_mapping: dict[Any, Any], comparison: BooleanClause):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_not_like(self, _object: Any, comparison: BooleanClause):
+    def visit_not_like(
+        self, _object_mapping: dict[Any, Any], comparison: BooleanClause
+    ):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_or(self, _object: Any, comparisons: list[Any]):
+    def visit_or(self, _object_mapping: dict[Any, Any], comparisons: list[Any]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_and(self, _object: Any, comparisons: list[Any]):
+    def visit_and(self, _object_mapping: dict[Any, Any], comparisons: list[Any]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_xor(self, _object: Any, comparisons: list[Any]):
+    def visit_xor(self, _object_mapping: dict[Any, Any], comparisons: list[Any]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_not(self, _object: Any, comparisons: list[Any]):
+    def visit_not(self, _object_mapping: dict[Any, Any], comparisons: list[Any]):
         raise NotImplementedError
