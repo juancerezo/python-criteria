@@ -77,7 +77,8 @@ class Attribute(_AttributeBase[_T_co]):
     def __get__(self, instance, owner) -> "Attribute[_T_co]" | _T_co:
         return self
 
-    def __set__(self, instance: Any, value: "Attribute[_T_co]" | _T_co) -> None: ...
+    def __set__(self, instance: Any, value: "Attribute[_T_co]" | _T_co) -> None:
+        return super().__set__(instance, value)
 
     def __hash__(self) -> int:
         return hash((self.parent_class, self.name))
