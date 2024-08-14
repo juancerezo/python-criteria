@@ -1,5 +1,5 @@
 from collections import ChainMap
-from typing import Any, dataclass_transform
+from typing import Any, dataclass_transform, get_args
 
 from .filter import Attribute, Value
 
@@ -15,7 +15,7 @@ class EntityBuilder(type):
                 if hasattr(cls, _field):
                     value = Value(getattr(cls, _field))
 
-                setattr(cls, _field, Attribute(cls, _field, _type, value))  # type: ignore
+                setattr(cls, _field, Attribute(cls, _field, get_args(_type), value))  # type: ignore
 
         super(EntityBuilder, cls).__init__(name, bases, clsdict)
 
