@@ -62,28 +62,15 @@ class Attribute(_AttributeBase[_T_co]):
         self.value = _value
 
     @overload
-    def __get__(
-        self, obj: None, objtype: "type[Attribute[_T_co]] | None" = None
-    ) -> "Attribute[_T_co]": ...
+    def __get__(self, instance: None, owner) -> "Attribute[_T_co]": ...
 
     @overload
-    def __get__(
-        self, obj: "Attribute[_T_co]", objtype: "type[Attribute[_T_co]] | None" = None
-    ) -> _T_co: ...
+    def __get__(self, instance, owner) -> _T_co: ...
 
-    def __get__(
-        self,
-        obj: "Attribute[_T_co] | None",
-        objtype: "type[Attribute[_T_co]] | None" = None,
-    ) -> "Attribute[_T_co]" | _T_co:
-        if obj is None:
-            return self
+    def __get__(self, instance, owner) -> "Attribute[_T_co]" | _T_co:
+        return self
 
-        return obj.value
-
-    def __set__(
-        self, obj: "Attribute[_T_co]", value: "Attribute[_T_co]" | _T_co
-    ) -> None:
+    def __set__(self, obj, value: "Attribute[_T_co]" | _T_co) -> None:
         obj.value = value
 
     def __hash__(self) -> int:
