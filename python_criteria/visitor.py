@@ -2,7 +2,7 @@ import abc
 from typing import Any
 
 from .clauses import BooleanClause, BooleanClauseList
-from .filter import Filter, FilterableAttribute
+from .filter import Attribute, Filter
 
 
 class BaseVisitor(metaclass=abc.ABCMeta):
@@ -38,7 +38,7 @@ class BaseVisitor(metaclass=abc.ABCMeta):
             or NotImplemented
         )
 
-    def _attr(self, _object_mapping: dict[Any, Any], field: FilterableAttribute):
+    def _attr(self, _object_mapping: dict[Any, Any], field: Attribute):
         _object = _object_mapping.get(field.parent_class)
         if _object is None:
             raise RuntimeError(

@@ -1,5 +1,5 @@
 # pyright: reportAttributeAccessIssue=false, reportIncompatibleMethodOverride=false
-from typing import Any, Type, overload
+from typing import Any, Generic, Type, TypeVar, overload
 
 from .clauses import (
     BooleanClause,
@@ -16,6 +16,7 @@ from .clauses import (
 )
 
 type ClauseType = BooleanClause | BooleanClauseList
+_T_co = TypeVar("_T_co", bound=Any, covariant=True)
 
 
 class Filter:
@@ -52,7 +53,10 @@ class Value:
         self.content = content
 
 
-class FilterableAttribute[T]:
+class _AttributeBase(Generic[_T_co]): ...
+
+
+class Attribute(_AttributeBase[_T_co]):
     parent_class: Type
     type: Type
     name: str
@@ -65,13 +69,18 @@ class FilterableAttribute[T]:
         self.value = _value
 
     @overload
-    def __get__(self, instance: None, owner) -> "FilterableAttribute[T]": ...
+    def __get__(self, instance: None, owner) -> "Attribute[_T_co]": ...
 
     @overload
-    def __get__(self, instance, owner) -> T: ...
+    def __get__(self, instance, owner) -> _T_co: ...
 
-    def __get__(self, instance, owner) -> "FilterableAttribute[T]" | T:
+    def __get__(self, instance, owner) -> "Attribute[_T_co]" | _T_co:
         return self
+
+    def __set__(self, instance: Any, value: "Attribute[_T_co]" | _T_co) -> None: ...
+
+    def __hash__(self) -> int:
+        return hash((self.parent_class, self.name))
 
     def __repr__(self) -> str:
         return f"{self.parent_class.__name__}.{self.name}[{self.type.__name__}]"
@@ -105,8 +114,3 @@ class FilterableAttribute[T]:
 
     def not_like(self, other):
         return NotLike(self, other)
-
-
-type Attribute[T] = FilterableAttribute[
-    T
-] | Any  # pylint: disable=unsubscriptable-object
