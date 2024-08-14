@@ -68,10 +68,13 @@ class Attribute(_AttributeBase[_T_co]):
     def __get__(self, instance, owner) -> _T_co: ...
 
     def __get__(self, instance, owner) -> "Attribute[_T_co]" | _T_co:
-        return self
+        if instance is None:
+            return self
 
-    def __set__(self, obj, value: "Attribute[_T_co]" | _T_co) -> None:
-        obj.value = value
+        return self.value
+
+    def __set__(self, instance, value) -> None:
+        self.value = value
 
     def __hash__(self) -> int:
         return hash((self.parent_class, self.name))
