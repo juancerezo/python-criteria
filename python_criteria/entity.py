@@ -1,7 +1,7 @@
 from collections import ChainMap
 from typing import Any, dataclass_transform, get_args
 
-from .filter import Attribute, Value
+from .filter import Attribute
 
 type AnnotatedObject = Any
 
@@ -13,7 +13,7 @@ class EntityBuilder(type):
             for _field, _type in cls.__annotations__.items():
                 value = None
                 if hasattr(cls, _field):
-                    value = Value(getattr(cls, _field))
+                    value = getattr(cls, _field)
 
                 setattr(cls, _field, Attribute(cls, _field, get_args(_type), value))  # type: ignore
 
@@ -24,16 +24,11 @@ class BaseEntity(metaclass=EntityBuilder):
     def __init__(self, /, **kwargs: Any) -> None:
         for name, _type in self.__annotations__.items():  # pylint: disable=no-member
             in_arguments = name in kwargs
-            setted_by_default = getattr(self, name).value is not None
 
-            if not in_arguments and not setted_by_default:
+            if not in_arguments:
                 raise ValueError(
                     f"{self.__class__.__name__} constructor key argument '{name}' is missing."
                 )
-
-            if not in_arguments and setted_by_default:
-                value = getattr(self, name).value.content
-                setattr(self, name, value)
 
             else:
                 setattr(self, name, kwargs[name])
