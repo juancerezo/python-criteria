@@ -53,28 +53,34 @@ class Attribute(_AttributeBase[_T_co]):
     parent_class: Type
     type: tuple[Type]
     name: str
+    private_name: str
     value: "Attribute[_T_co]" | _T_co
 
     def __init__(self, _cls, _field, _type, _value) -> None:
         self.parent_class = _cls
         self.name = _field
+        self.private_name = "__" + _field
         self.type = _type
         self.value = _value
 
-    @overload
-    def __get__(self, instance: None, owner) -> "Attribute[_T_co]": ...
+    def __set_name__(self, owner, name):
+        self.name = name
+        self.private_name = "__" + name
 
     @overload
-    def __get__(self, instance, owner) -> _T_co: ...
+    def __get__(self, obj: None, objcls) -> "Attribute[_T_co]": ...
 
-    def __get__(self, instance, owner) -> "Attribute[_T_co]" | _T_co:
-        if instance is None:
+    @overload
+    def __get__(self, obj, objcls) -> _T_co: ...
+
+    def __get__(self, obj, objcls):
+        if obj is None:
             return self
 
-        return self.value
+        return getattr(obj, self.private_name)
 
-    def __set__(self, instance, value) -> None:
-        self.value = value
+    def __set__(self, obj, value):
+        setattr(obj, self.private_name, value)
 
     def __hash__(self) -> int:
         return hash((self.parent_class, self.name))
