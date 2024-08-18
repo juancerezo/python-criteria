@@ -8,7 +8,7 @@ from .filter import Attribute
 from .visitor import BaseVisitor
 
 
-class SQLAlchemyVisitor(BaseVisitor):
+class MemoryVisitor(BaseVisitor):
     _attribute_table_column_mapping: dict[type[BaseEntity], Any]
 
     def __init__(self, _attribute_table_column_mapping: dict[type[BaseEntity], Any]):

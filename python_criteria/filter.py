@@ -50,7 +50,7 @@ class _AttributeBase(Generic[_T_co]): ...
 
 
 class Attribute(_AttributeBase[_T_co]):
-    parent_class: Type
+    parent_class: Type[Any]
     type: tuple[Type]
     name: str
     private_name: str
