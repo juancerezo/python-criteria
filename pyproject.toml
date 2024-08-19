@@ -23,6 +23,27 @@ include = ["python_criteria"]
 [tool.setuptools.dynamic]
 version = {attr = "python_criteria.__version__"}
 
+[project.optional-dependencies]
+
+lint = [
+  "black",
+  "pylint",
+  "pyright",
+  "isort",
+  "autoflake",
+  "radon"
+]
+
+dev = [
+    "pre-commit",
+    "src[lint]",
+]
+
+ci = [
+  "pre-commit",
+  "src[lint]"
+]
+
 [tool.pyright]
 typeCheckingMode = "standard"
 useLibraryCodeForTypes = true
@@ -33,18 +54,32 @@ ignore = [
     "**/\\.*",
     "node_modules",
     "build",
-    "*.idea.py"
+    # "*.idea.py",
+    "data",
 ]
 
+[tool.isort]
+profile = "black"
+line_length = 110
+
 [tool.black]
+line-length = 110
 force-exclude = """
 /(
 \\.git
 | build
 | node_modules
 | .*\\.idea.py
+| data
 )/
-""" 
+"""
+
+[tool.autoflake]
+ignore-init-module-imports = true
+remove-all-unused-imports = true
+remove-duplicate-keys = true
+in-place = true
+recursive = true
 
 # ... other project metadata fields as specified in:
 #     https://packaging.python.org/en/latest/specifications/declaring-project-metadata/

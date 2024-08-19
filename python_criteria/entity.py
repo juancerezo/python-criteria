@@ -26,9 +26,7 @@ class BaseEntity(metaclass=EntityBuilder):
             in_arguments = name in kwargs
 
             if not in_arguments:
-                raise ValueError(
-                    f"{self.__class__.__name__} constructor key argument '{name}' is missing."
-                )
+                raise ValueError(f"{self.__class__.__name__} constructor key argument '{name}' is missing.")
 
             else:
                 setattr(self, name, kwargs[name])
@@ -49,11 +47,7 @@ class BaseEntity(metaclass=EntityBuilder):
         result: dict[str, Any] = {}
 
         annotations = ChainMap(
-            *(
-                c.__annotations__
-                for c in _object.__class__.__mro__
-                if "__annotations__" in c.__dict__
-            )
+            *(c.__annotations__ for c in _object.__class__.__mro__ if "__annotations__" in c.__dict__)
         )
         for name, _ in annotations.items():
             if name in exclude:
