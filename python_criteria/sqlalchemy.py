@@ -9,24 +9,22 @@ from .visitor import BaseVisitor
 
 
 class SQLAlchemyVisitor(BaseVisitor):
-    _attribute_table_column_mapping: dict[type[BaseEntity], Any]
+    _entity_table_mapping: dict[type[BaseEntity], Any]
 
-    def __init__(self, _attribute_table_column_mapping: dict[type[BaseEntity], Any]):
-        self._attribute_table_column_mapping = _attribute_table_column_mapping
+    def __init__(self, entity_table_mapping: dict[type[BaseEntity], type[Any]]):
+        self._entity_table_mapping = entity_table_mapping
 
     def _attr(self, field: Attribute[Any]):
-        _object = self._attribute_table_column_mapping.get(field.parent_class)
-        if _object is None:
+        _table = self._entity_table_mapping.get(field.parent_class)
+        if _table is None:
             raise RuntimeError(
-                f"Invalid _object_mapping. Missing class '{field.parent_class.__name__}'."
+                f"Invalid _entity_table_mapping. Missing class '{field.parent_class.__name__}'."
             )
 
-        if not hasattr(_object, field.name):
-            raise ValueError(
-                f"'{field.name}' is not a valid attribute of '{field.parent_class.__name__}'"
-            )
+        if not hasattr(_table, field.name):
+            raise ValueError(f"'{field.name}' is not a valid attribute of '{field.parent_class.__name__}'")
 
-        return getattr(_object, field.name)
+        return getattr(_table, field.name)
 
     def visit_eq(self, comparison: BooleanClause):
         return self._attr(comparison.field) == comparison.value
@@ -52,7 +50,7 @@ class SQLAlchemyVisitor(BaseVisitor):
     def visit_like(self, comparison: BooleanClause):
         return self._attr(comparison.field).ilike(comparison.value, escape="\\")
 
-    def visit_not_like(self, comparison: BooleanClause):
+    def visit_notlike(self, comparison: BooleanClause):
         return self._attr(comparison.field).not_ilike(comparison.value, escape="\\")
 
     def visit_or(self, comparisons: list[Any]):
@@ -69,9 +67,7 @@ class SQLAlchemyVisitor(BaseVisitor):
         return _op
 
     def visit_xor(self, comparisons: list[Any]):
-        return (
-            comparisons[0] ^ comparisons[1]
-        )  #! <--- Caution: do not modify bitwise operator
+        return comparisons[0] ^ comparisons[1]  #! <--- Caution: do not modify bitwise operator
 
     def visit_not(self, comparisons: list[Any]):
         return ~comparisons[0]  #! <--- Caution: do not modify bitwise operator

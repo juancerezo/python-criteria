@@ -1,19 +1,7 @@
 # pyright: reportAttributeAccessIssue=false, reportIncompatibleMethodOverride=false
 from typing import Any, Generic, Type, TypeVar, overload
 
-from .clauses import (
-    BooleanClause,
-    BooleanClauseList,
-    Eq,
-    Ge,
-    Gt,
-    In,
-    Le,
-    Like,
-    Lt,
-    Ne,
-    NotLike,
-)
+from .clauses import BooleanClause, BooleanClauseList, Eq, Ge, Gt, In, Le, Like, Lt, Ne, NotLike
 
 type ClauseType = BooleanClause | BooleanClauseList
 _T_co = TypeVar("_T_co", bound=Any, covariant=True)
@@ -86,7 +74,7 @@ class Attribute(_AttributeBase[_T_co]):
         return hash((self.parent_class, self.name))
 
     def __repr__(self) -> str:
-        return f"{self.parent_class.__name__}.{self.name}[{self.type.__name__}]"
+        return f"{self.parent_class.__name__}.{self.name}[{self.type[0].__name__}]"
 
     def __str__(self):
         return self.name

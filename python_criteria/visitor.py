@@ -2,7 +2,7 @@ import abc
 from typing import Any
 
 from .clauses import BooleanClause, BooleanClauseList
-from .filter import Attribute, Filter
+from .filter import Filter
 
 
 class BaseVisitor(metaclass=abc.ABCMeta):
@@ -59,7 +59,7 @@ class BaseVisitor(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def visit_not_like(self, comparison: BooleanClause):
+    def visit_notlike(self, comparison: BooleanClause):
         raise NotImplementedError
 
     @abc.abstractmethod
