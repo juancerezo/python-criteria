@@ -13,7 +13,7 @@ class MemoryVisitor(BaseVisitor):
     _data: list[dict[Attribute[Any], Any]]
     __current_item: dict[Attribute[Any], Any]
 
-    def __init__(self, data: list[dict[Attribute[Any], Any]], isouter: bool):
+    def __init__(self, data: list[dict[Attribute[Any], Any]]):
         self._data = data
 
     def _visit_item(self, clause: ClauseType, item: dict[Attribute[Any], Any]) -> Any:
