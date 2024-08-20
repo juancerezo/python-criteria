@@ -44,13 +44,12 @@ class MemoryVisitor(BaseVisitor):
         return filtered
 
     def _attr(self, field: Attribute[Any]):
-        _value = self.__current_item.get(field)
-        if _value is None:
+        if field not in self.__current_item:
             raise RuntimeError(
                 f"Invalid _object_mapping. Missing field '{field.parent_class.__name__}.{field.name}'."
             )
 
-        return _value
+        return self.__current_item[field]
 
     def visit_eq(self, comparison: BooleanClause):
         return self._attr(comparison.field) == comparison.value
