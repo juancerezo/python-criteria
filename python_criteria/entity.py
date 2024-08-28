@@ -1,7 +1,7 @@
 from collections import ChainMap
-from typing import Any, dataclass_transform, get_args
+from typing import Annotated, Any, dataclass_transform, get_args, get_origin
 
-from .filter import Attribute
+from .attribute import Attribute
 
 type AnnotatedObject = Any
 
@@ -15,7 +15,22 @@ class EntityBuilder(type):
                 if hasattr(cls, _field):
                     value = getattr(cls, _field)
 
-                setattr(cls, _field, Attribute(cls, _field, get_args(_type), value))  # type: ignore
+                _constraints = []
+                _origin_type = get_origin(_type)
+                if _origin_type is Annotated:
+                    _annotated_types = get_args(_type)
+                    _type_args = get_args(_annotated_types[0])
+                    _constraints = _annotated_types[1:]
+
+                elif _origin_type is Attribute:
+                    _type_args = get_args(_type)
+
+                else:
+                    raise TypeError(
+                        f"Invalid attribute type. {cls.__name__}.{_field} should be typed as Annotated[Attribute[...], ...] or Attribute[...]"
+                    )
+
+                setattr(cls, _field, Attribute(cls, _field, _type_args, value, _constraints))  # type: ignore
 
         super(EntityBuilder, cls).__init__(name, bases, clsdict)
 
@@ -30,6 +45,9 @@ class BaseEntity(metaclass=EntityBuilder):
 
             else:
                 setattr(self, name, kwargs[name])
+
+    def __getattribute__(self, name: str) -> Attribute[Any]:
+        return super().__getattribute__(name)
 
     @classmethod
     def _to_dict(

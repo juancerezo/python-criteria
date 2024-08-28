@@ -2,9 +2,9 @@ from typing import Any
 
 type SQLAlchemyTable = Any
 
+from .attribute import Attribute
 from .clauses import BooleanClause
 from .entity import BaseEntity
-from .filter import Attribute
 from .visitor import BaseVisitor
 
 

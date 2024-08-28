@@ -4,8 +4,9 @@ from python_criteria.filter import Filter
 
 type SQLAlchemyTable = Any
 
+from .attribute import Attribute
 from .clauses import BooleanClause, BooleanClauseList
-from .filter import Attribute, ClauseType
+from .filter import ClauseType
 from .visitor import BaseVisitor
 
 

@@ -1,7 +1,9 @@
-__version__ = "0.10.2"
+__version__ = "0.11.0"
 
+from .attribute import Attribute
+from .constraints import AttributeConstraints
 from .entity import BaseEntity
-from .filter import Attribute, Filter
+from .filter import Filter
 from .label import label
 from .memory import MemoryVisitor
 from .sqlalchemy import SQLAlchemyVisitor
