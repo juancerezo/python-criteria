@@ -1,3 +1,5 @@
+import re
+from fnmatch import fnmatch
 from typing import Any
 
 from python_criteria.filter import Filter
@@ -8,6 +10,8 @@ from .attribute import Attribute
 from .clauses import BooleanClause, BooleanClauseList
 from .filter import ClauseType
 from .visitor import BaseVisitor
+
+WILDCARD_PATTERN = re.compile(r"(?<!\\)%")
 
 
 class MemoryVisitor(BaseVisitor):
@@ -74,10 +78,12 @@ class MemoryVisitor(BaseVisitor):
         return self._attr(comparison.field) in tuple(comparison.value)
 
     def visit_like(self, comparison: BooleanClause):
-        return comparison.value.lower() in self._attr(comparison.field).lower()
+        pattern = WILDCARD_PATTERN.sub("*", comparison.value.lower())
+        return fnmatch(self._attr(comparison.field).lower(), pattern)
 
     def visit_notlike(self, comparison: BooleanClause):
-        return comparison.value.lower() not in self._attr(comparison.field).lower()
+        pattern = WILDCARD_PATTERN.sub("*", comparison.value.lower())
+        return not fnmatch(self._attr(comparison.field).lower(), pattern)
 
     def visit_or(self, comparisons: list[Any]):
         _op = comparisons[0]
